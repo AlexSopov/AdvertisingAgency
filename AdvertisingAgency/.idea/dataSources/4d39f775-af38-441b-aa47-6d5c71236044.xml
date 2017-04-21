@@ -4,12 +4,5 @@
     <schema id="1">
       <visible>1</visible>
     </schema>
-    <table id="2" parent="1" name="sqlite_sequence"/>
-    <column id="3" parent="2" name="name">
-      <data-type>(0,-1)|12</data-type>
-    </column>
-    <column id="4" parent="2" name="seq">
-      <data-type>(0,-1)|12</data-type>
-    </column>
   </database-model>
 </dataSource>

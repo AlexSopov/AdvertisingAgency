@@ -10,8 +10,11 @@ from PyQt5.QtWidgets import *
 from AddOrderDialog import AddOrderDialog
 from CustomOrderListItem import CustomOrderListItem
 
-
+# Класс виджета, отображающего рекламные заказы
+# Предоставляет доступ к фильтру данных, добавлению и
+# удалению заказов
 class OrdersWidget(QWidget):
+    # Инициализация
     def __init__(self):
         super().__init__()
 
@@ -24,6 +27,7 @@ class OrdersWidget(QWidget):
         self.initialize_user_interface()
         self.initialize_list()
 
+    # Инициализация представления
     def initialize_user_interface(self):
         main_vertical_layout = QVBoxLayout()
 
@@ -39,7 +43,7 @@ class OrdersWidget(QWidget):
         button_add_new_order.setStyleSheet("padding: 5px 20px")
         button_add_new_order.clicked.connect(self.add_new_order)
 
-        button_del_order = QPushButton(QIcon('images/add_icon.png'), "Удалить заказ")
+        button_del_order = QPushButton(QIcon('images/del_icon.png'), "Удалить заказ")
         button_del_order.setIconSize(QSize(24, 24))
         button_del_order.setStyleSheet("padding: 5px 20px")
         button_del_order.clicked.connect(self.del_order)
@@ -58,6 +62,7 @@ class OrdersWidget(QWidget):
 
         self.setLayout(main_vertical_layout)
 
+    # Инициализация представления фильтра
     def initialize_filter_view(self):
         group_box_filter = QGroupBox('Фильтр')
         layout_filter = QHBoxLayout()
@@ -140,6 +145,7 @@ class OrdersWidget(QWidget):
 
         return group_box_filter
 
+    # Заполнить списко заказов из базы данных
     def initialize_list(self):
         items_count = 0
 
@@ -201,10 +207,12 @@ class OrdersWidget(QWidget):
             self.list_widget.setVisible(True)
             self.empty_text_widget.setVisible(False)
 
+    # Обновить данные фильтра
     def update_filter_data(self):
         self.query_model_billboards.setQuery(self.query_model_billboards.query().lastQuery())
         self.query_model_companies.setQuery(self.query_model_companies.query().lastQuery())
 
+    # Обработка нажатия кнопки Добавить заказ
     def add_new_order(self):
         dialog = AddOrderDialog(self)
         result = dialog.exec()
@@ -213,6 +221,7 @@ class OrdersWidget(QWidget):
             self.list_widget.clear()
             self.initialize_list()
 
+    # Обработка нажатия кнопки Удалить заказ
     def del_order(self):
         current_item = self.list_widget.currentItem()
         if current_item is None:

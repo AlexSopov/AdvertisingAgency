@@ -3,19 +3,23 @@ from datetime import datetime
 
 from PyQt5.QtWidgets import *
 
-
+# Класс описываюий диалог добавления нового заказа
 class AddOrderDialog(QDialog):
+    # Инициализация
     def __init__(self, parent):
         super().__init__(parent)
 
         form_layout = QFormLayout()
 
+        # Выпадающие списки рекламного щита и организации соответственно
         self.list_billboards = QComboBox()
         self.list_companies = QComboBox()
 
+        # Виджеты для редактирования начальной и конечной даты показа рекламы
         self.date_ad_start = QDateEdit()
         self.date_ad_end = QDateEdit()
 
+        # Виджеты для выбора цены
         self.making_price = QSpinBox()
         self.posting_price = QSpinBox()
 
@@ -29,6 +33,7 @@ class AddOrderDialog(QDialog):
         horizontal_layout_buttons.addWidget(button_cancel)
         horizontal_layout_buttons.addWidget(button_ok)
 
+        # Добавление виджетов на главный layout
         form_layout.addRow('Рекламный щит:', self.list_billboards)
         form_layout.addRow('Организация:', self.list_companies)
         form_layout.addRow('Дата размещения:', self.date_ad_start)
@@ -51,14 +56,17 @@ class AddOrderDialog(QDialog):
         self.setLayout(form_layout)
 
     def initialize_lists(self):
+        # Инициализировать выпадащие списки данными из БД
+
+        # Список рекламных щитов
         self.query_model_billboards.setQuery('SELECT * FROM billboards '
                                              'ORDER BY address')
         self.list_billboards.setModel(self.query_model_billboards)
         self.list_billboards.setModelColumn(1)
 
+        # Список организация
         self.query_model_companies.setQuery('SELECT id, name FROM companies '
                                             'ORDER BY name')
-
         self.list_companies.setModel(self.query_model_companies)
         self.list_companies.setModelColumn(1)
 
@@ -81,6 +89,9 @@ class AddOrderDialog(QDialog):
         self.posting_price.setSuffix(' руб.')
 
     def validate_data(self, record_billboard):
+        # Проверка входных данных
+
+        # Проверка на то, что дата конца показа больше даты начала
         ad_start = self.date_ad_start.date()
         ad_end = self.date_ad_end.date()
         if ad_start > ad_end:
@@ -90,6 +101,8 @@ class AddOrderDialog(QDialog):
             message_box.exec()
             return False
 
+        # Проверка на наличие свободных рекламных поверхностей для
+        # указанного периода времени
         get_count_orders_query = QtSql.QSqlQuery()
         get_count_orders_query.exec("SELECT COUNT(*) FROM orders "
                                     "WHERE ad_start <= '{start_date}' AND ad_end >= '{start_date}' "
@@ -111,6 +124,7 @@ class AddOrderDialog(QDialog):
         return True
 
     def accept(self):
+        # Добавление новой записи при нажатии кнопки Сохранить
         list_index_billboard = self.list_billboards.currentIndex()
         if list_index_billboard < 0:
             return
